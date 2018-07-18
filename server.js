@@ -20,7 +20,7 @@ var myBucketPromise = new AWS.S3({apiVersion: '2006-03-01'}).headBucket({Bucket:
 myBucketPromise.then(
   function(data){
     console.log("Bucket exists.")
-    var objectParams = {Bucket: myBucketName, Key: 'keyName', Body: audioFile};
+    var objectParams = {Bucket: myBucketName, Key: keyName, Body: audioFile};
     var uploadPromise = new AWS.S3({apiVersion: '2006-03-01'}).putObject(objectParams).promise();
     uploadPromise.then(
       function(data) {
