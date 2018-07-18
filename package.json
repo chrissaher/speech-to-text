@@ -1,0 +1,23 @@
+{
+  "name": "speech-to-text",
+  "version": "1.0.0",
+  "description": "speech to text using aws translator API and nodejs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrissaher/speech-to-text.git"
+  },
+  "author": "chrissaher",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrissaher/speech-to-text/issues"
+  },
+  "homepage": "https://github.com/chrissaher/speech-to-text#readme",
+  "dependencies": {
+    "aws-sdk": "^2.276.1",
+    "uuid": "^3.3.2"
+  }
+}
