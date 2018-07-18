@@ -9,7 +9,8 @@ AWS.config.update({region:'us-east-2'});
 var audioFile = fs.createReadStream('./Google_Gnome.wav');
 
 // Create unique bucket name
-var myBucketName = 'aws-trans'
+// Make sure this bucket is already
+var myBucketName = 'chrissaher-aws'
 
 // Create name for uploaded object key
 var keyName = 'myfile.wav';
@@ -36,7 +37,7 @@ myBucketPromise.then(
 });
 
 // Create a name for transcribejob
-var transcribejob = 'transcribe job for wav'
+var transcribejob = 'job_3'
 
 // Define params for promise
 var params = {
@@ -45,7 +46,7 @@ var params = {
     MediaFileUri: 'https://s3.us-east-2.amazonaws.com/aws-trans/Google_Gnome.wav'
   },
   MediaFormat: 'wav', /* required */
-  TranscriptionJobName: 'Job_1', /* required */
+  TranscriptionJobName: transcribejob, /* required */
 };
 
 // Create a transcirbe service
@@ -63,13 +64,36 @@ transcribePromise.then(
   console.error(err, err.stack)
 })
 
-// Create promise for getting transcription job
-var jobStatusPromise = transcribeService.getTranscriptionJob({TranscriptionJobName:'Job_1'}).promise();
 
-jobStatusPromise.then(function(data){
-  console.log('correct!!!')
-  console.log('data: ', data)
+
+// Create cont for debugging
+var calls = 0
+// Create a promise for checking status
+var checkStatus = new Promise(() => {
+  var status = setInterval(function(){
+    console.log("Calling function #", calls);
+    // Create promise for getting transcription job
+    var jobStatusPromise = transcribeService.getTranscriptionJob({TranscriptionJobName:transcribejob}).promise();
+    jobStatusPromise.then(function(data){
+      if (data != null) {
+        var currentStatus = data.TranscriptionJob["TranscriptionJobStatus"];
+        console.log("status for call ", calls, ": ", currentStatus)
+        if (currentStatus == 'COMPLETED') {
+          clearInterval(status)
+          console.log("response: ", data)
+          return
+        }
+      }
+    }).catch(
+      function(err){
+        console.error(err, err.stack);
+    });
+    calls += 1;
+  }, 15000) // 5 seconds
+}).then(()=>{
+  return;
 }).catch(
   function(err){
-    console.error(err, err.stack);
-  });
+    console.error(err, err.stack)
+  }
+);
